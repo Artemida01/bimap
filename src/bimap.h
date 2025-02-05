@@ -20,8 +20,13 @@ public:
   bimap(const bimap& other)
       : left_bimap(other._pull_left_tree())
       , right_bimap(other._pull_right_tree()) {
-    for (auto it = other.begin_right(); it != other.end_right(); ++it) {
-      insert(*it.flip(), *it);
+    try {
+      for (auto it = other.begin_right(); it != other.end_right(); ++it) {
+        insert(*it.flip(), *it);
+      }
+    } catch (...) {
+      erase_right(begin_right(), end_right());
+      throw;
     }
   }
 
