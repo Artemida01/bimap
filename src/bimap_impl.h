@@ -3,9 +3,6 @@
 #include "bimap_iterator.h"
 #include "bimap_node.h"
 
-#include <functional>
-#include <memory>
-
 template <typename, typename, typename, typename>
 class bimap;
 

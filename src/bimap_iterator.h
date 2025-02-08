@@ -2,9 +2,6 @@
 
 #include "bimap_node.h"
 
-#include <cstddef>
-#include <iterator>
-
 template <typename FirstT, typename SecondT, typename Tag>
 class bimap_iterator {
 public:
