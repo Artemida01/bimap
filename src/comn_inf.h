@@ -1,7 +1,6 @@
 #pragma once
 
-#include <assert.h>
-
+#include <cassert>
 #include <cstddef>
 #include <functional>
 #include <iterator>
@@ -11,9 +10,6 @@
 
 struct left_tag;
 struct right_tag;
-
-template <typename Tag>
-using other_tag = std::conditional_t<std::is_same_v<Tag, left_tag>, right_tag, left_tag>;
 
 template <typename>
 struct tagged_node;

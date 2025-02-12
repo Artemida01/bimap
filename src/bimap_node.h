@@ -3,6 +3,10 @@
 
 struct control_node {
 public:
+  template <typename Tag>
+  using other_tag = std::conditional_t<std::is_same_v<Tag, left_tag>, right_tag, left_tag>;
+
+public:
   control_node() = default;
   control_node(const control_node&) = default;
   ~control_node() = default;
