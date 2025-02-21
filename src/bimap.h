@@ -103,7 +103,7 @@ public:
   }
 
   bool erase_left(const LeftT& left) {
-    left_iterator itL= find_left(left);
+    left_iterator itL = find_left(left);
     bool is_present = (itL != end_left());
     if (is_present) {
       erase_left(itL);
