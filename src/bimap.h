@@ -103,17 +103,19 @@ public:
   }
 
   bool erase_left(const LeftT& left) {
-    bool is_present = (find_left(left) != end_left());
+    left_iterator itL= find_left(left);
+    bool is_present = (itL != end_left());
     if (is_present) {
-      erase_left(lower_bound_left(left));
+      erase_left(itL);
     }
     return is_present;
   }
 
   bool erase_right(const RightT& right) {
-    bool is_present = (find_right(right) != end_right());
+    right_iterator itR = find_right(right);
+    bool is_present = (itR != end_right());
     if (is_present) {
-      erase_right(lower_bound_right(right));
+      erase_right(itR);
     }
     return is_present;
   }

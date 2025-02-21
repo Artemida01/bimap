@@ -26,8 +26,7 @@ public:
   bimap_impl& operator=(bimap_impl&&) = default;
   ~bimap_impl() = default;
 
-  bimap_impl(const bimap_impl& other)
-      : comparator(other) {}
+  bimap_impl(const bimap_impl& other) = default;
 
   bimap_impl& operator=(const bimap_impl& other) {
     bimap_impl copy(other);
@@ -40,13 +39,15 @@ public:
 
 public:
   void insert(control_node* element, iterator pointer) noexcept {
+    control_node& sentinel = _get_sentinel();
+
     if (empty()) {
-      element->connect_less(&_get_sentinel());
-      _get_sentinel().connect_less(element);
+      element->connect_less(&sentinel);
+      sentinel.connect_less(element);
     } else { // !empty()
-      if (pointer._ptr->get_down_left() == &_get_sentinel()) {
+      if (pointer._ptr->get_down_left() == &sentinel) {
         pointer._ptr->connect_less(element);
-        element->connect_less(&_get_sentinel());
+        element->connect_less(&sentinel);
       } else if (pointer._ptr->get_down_left() == nullptr) {
         pointer._ptr->connect_less(element);
       } else {
@@ -60,29 +61,17 @@ public:
     control_node* next_ptr = (++it)._ptr;
 
     if (delete_ptr->is_last()) {
-      if (delete_ptr->is_left_child()) {
-        delete_ptr->get_parent()->set_left(nullptr);
-      } else {
-        delete_ptr->get_parent()->set_right(nullptr);
-      }
+      delete_ptr->set_via_parent(nullptr);
     } else if (delete_ptr->get_down_right() == nullptr) {
       control_node* less_node = delete_ptr->get_down_left();
       delete_ptr->get_down_left()->set_parent(delete_ptr->get_parent());
 
-      if (delete_ptr->is_left_child()) {
-        delete_ptr->get_parent()->set_left(less_node);
-      } else {
-        delete_ptr->get_parent()->set_right(less_node);
-      }
+      delete_ptr->set_via_parent(less_node);
     } else {
       control_node* greater_node = delete_ptr->get_down_right();
       delete_ptr->get_down_right()->set_parent(delete_ptr->get_parent());
 
-      if (delete_ptr->is_left_child()) {
-        delete_ptr->get_parent()->set_left(greater_node);
-      } else {
-        delete_ptr->get_parent()->set_right(greater_node);
-      }
+      delete_ptr->set_via_parent(greater_node);
 
       if (delete_ptr->get_down_left() != nullptr) {
         next_ptr->set_left(delete_ptr->get_down_left());
@@ -138,12 +127,20 @@ public:
   }
 
   friend bool operator==(const bimap_impl& lhs, const bimap_impl& rhs) {
+    auto equal_check = [lhs](iterator it1, iterator it2) {
+      return !lhs(*it1, *it2) && !lhs(*it2, *it1);
+    };
+
+    auto equal_check_rev = [lhs](iterator::other_iterator it1, iterator::other_iterator it2) {
+      return !lhs(*it1, *it2) && !lhs(*it2, *it1);
+    };
+
     bool condition_equals = true;
     auto itL = lhs.begin();
     auto itR = rhs.begin();
     for (; itR != rhs.end() && itL != lhs.end(); ++itL, ++itR) {
-      condition_equals &= !lhs(*itL, *itR) && !lhs(*itR, *itL);
-      condition_equals &= !lhs(*itL.flip(), *itR.flip()) && !lhs(*itR.flip(), *itL.flip());
+      condition_equals &= equal_check(itL, itR);
+      condition_equals &= equal_check_rev(itL.flip(), itR.flip());
     }
 
     return condition_equals && itL == lhs.end() && itR == rhs.end();

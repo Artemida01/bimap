@@ -5,10 +5,6 @@
 template <typename FirstT, typename SecondT, typename Tag>
 class bimap_iterator {
 public:
-  template <typename T>
-  using other_tag = std::conditional_t<std::is_same_v<T, left_tag>, right_tag, left_tag>;
-
-public:
   using value_type = FirstT;
 
   using const_reference = const value_type&;
