@@ -99,20 +99,6 @@ public:
     node->_left = nullptr;
   }
 
-  template <typename LeftT, typename RightT, typename Tag>
-  static control_node* change_control(control_node* ptr) {
-    return static_cast<control_node*>(static_cast<tagged_node<other_tag<Tag>>*>(
-        static_cast<bimap_node<LeftT, RightT>*>(static_cast<tagged_node<Tag>*>(ptr))
-    ));
-  }
-
-  template <typename Tag>
-  static control_node* change_control(control_node* ptr) {
-    return static_cast<control_node*>(static_cast<tagged_node<other_tag<Tag>>*>(
-        static_cast<sentinel_node<left_tag, right_tag>*>(static_cast<tagged_node<Tag>*>(ptr))
-    ));
-  }
-
 private:
   control_node* _parent{this};
   control_node* _left{this};

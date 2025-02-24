@@ -83,9 +83,9 @@ public:
 
   other_iterator flip() const noexcept {
     if (_ptr->is_sentinel()) {
-      return other_iterator(control_node::change_control<Tag>(_ptr));
+      return other_iterator(change_control<Tag>(_ptr));
     }
-    return other_iterator(control_node::change_control<FirstT, SecondT, Tag>(_ptr));
+    return other_iterator(change_control<FirstT, SecondT, Tag>(_ptr));
   }
 
 private:
